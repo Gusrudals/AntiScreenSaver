@@ -13,9 +13,9 @@ A lightweight Windows desktop application that prevents system idle/screensaver 
 
 ## Requirements
 
-- Windows 10 or Windows 11
+- Windows 10/11 or Linux (with X11/Wayland)
 - Python 3.11+ (for running from source)
-- OR standalone executable (no Python required)
+- OR standalone executable (no Python required, Windows only)
 
 ## Installation
 
@@ -74,9 +74,9 @@ Right-click the tray icon to access:
 ## Configuration
 
 Settings are automatically saved to:
-```
-%APPDATA%\AntiScreensaver\config.json
-```
+- **Windows**: `%APPDATA%\AntiScreensaver\config.json`
+- **Linux**: `~/.config/anti-screensaver/config.json`
+- **macOS**: `~/Library/Application Support/AntiScreensaver/config.json`
 
 Default configuration:
 - **Interval**: 30 seconds
@@ -110,9 +110,10 @@ This keeps the system active while being imperceptible to users.
 
 ### Application won't start
 
-- Ensure you have Windows 10 or 11
-- For standalone exe: No additional requirements
+- Ensure you have Windows 10/11 or Linux
+- For standalone exe: No additional requirements (Windows only)
 - For source: Verify Python 3.11+ is installed
+- On Linux: Ensure you have X11 or a compatible Wayland compositor
 
 ### Antivirus false positive
 

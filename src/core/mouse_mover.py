@@ -9,11 +9,11 @@ mouse controller, and state manager.
 from datetime import datetime
 from PySide6.QtCore import QTimer, QObject, Signal
 from typing import Optional
-from .contracts import IMovementEngine, IMouseController, IStateManager
+from .contracts import IMouseController, IStateManager
 from .exceptions import EngineError
 
 
-class MovementEngine(QObject, IMovementEngine):
+class MovementEngine(QObject):
     """
     Qt-based movement engine using QTimer.
 
