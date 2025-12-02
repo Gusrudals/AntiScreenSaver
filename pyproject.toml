@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "anti-screensaver"
+version = "1.0.0"
+description = "Lightweight Windows desktop application that prevents system idle/screensaver activation through periodic micro mouse movements"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Anti-Screensaver Contributors"}
+]
+keywords = ["screensaver", "mouse", "automation", "windows", "desktop"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Desktop Environment",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "PySide6>=6.6.0",
+    "pynput>=1.7.6",
+    "fasteners>=0.18",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-qt>=4.2.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.5.0",
+]
+
+[project.scripts]
+anti-screensaver = "src.main:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/anti-screensaver"
+Repository = "https://github.com/yourusername/anti-screensaver"
+Issues = "https://github.com/yourusername/anti-screensaver/issues"
+
+[tool.setuptools]
+packages = ["src", "src.core", "src.gui", "src.platform"]
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --strict-markers"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

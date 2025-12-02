@@ -1,0 +1,6 @@
+{
+  "interval_seconds": 30,
+  "auto_start": false,
+  "last_state": "stopped",
+  "version": "1.0.0"
+}
