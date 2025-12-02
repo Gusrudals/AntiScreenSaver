@@ -190,7 +190,9 @@ The build script uses PyInstaller with these options:
 - `--onefile`: Single executable file
 - `--windowed`: No console window
 - `--name anti-screensaver`: Output filename
-- `--icon assets/icon.ico`: Application icon
+- `--clean`: Clean PyInstaller cache before building
+
+**Note**: Application icon is not currently configured. To add an icon in the future, place an `.ico` file at `assets/icon.ico` and add `--icon assets/icon.ico` to the PyInstaller command in `build.bat`.
 
 ### Verify Build
 
