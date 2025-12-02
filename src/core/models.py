@@ -39,11 +39,13 @@ class Configuration:
     Attributes:
         interval_seconds: Time between mouse movements (10-300 seconds)
         auto_start: Whether to start with Windows boot
+        click_enabled: Whether to perform mouse click on movement
         last_state: Last known running state (for UI consistency)
         version: Configuration schema version (semver format)
     """
     interval_seconds: int = 30
     auto_start: bool = False
+    click_enabled: bool = False
     last_state: RunningState = RunningState.STOPPED
     version: str = "1.0.0"
 
@@ -65,6 +67,10 @@ class Configuration:
         # Validate auto_start type
         if not isinstance(self.auto_start, bool):
             errors.append(f"auto_start must be boolean, got {type(self.auto_start)}")
+
+        # Validate click_enabled type
+        if not isinstance(self.click_enabled, bool):
+            errors.append(f"click_enabled must be boolean, got {type(self.click_enabled)}")
 
         # Validate last_state type
         if not isinstance(self.last_state, RunningState):

@@ -67,6 +67,7 @@ class JsonConfigurationManager(IConfigurationManager):
             config = Configuration(
                 interval_seconds=data.get('interval_seconds', 30),
                 auto_start=data.get('auto_start', False),
+                click_enabled=data.get('click_enabled', False),
                 last_state=last_state,
                 version=data.get('version', '1.0.0')
             )
@@ -117,6 +118,7 @@ class JsonConfigurationManager(IConfigurationManager):
         data = {
             'interval_seconds': config.interval_seconds,
             'auto_start': config.auto_start,
+            'click_enabled': config.click_enabled,
             'last_state': config.last_state.value,  # Convert enum to string
             'version': config.version
         }
@@ -159,6 +161,7 @@ class JsonConfigurationManager(IConfigurationManager):
         return Configuration(
             interval_seconds=30,
             auto_start=False,
+            click_enabled=False,
             last_state=RunningState.STOPPED,
             version="1.0.0"
         )

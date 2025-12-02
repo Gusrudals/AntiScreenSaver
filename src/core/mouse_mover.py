@@ -49,13 +49,15 @@ class MovementEngine(QObject):
         self._timer: Optional[QTimer] = None
         self._current_interval = 30  # Default 30 seconds
         self._pattern_state = 0  # 0 = move forward (+1,+1), 1 = move back (-1,-1)
+        self._click_enabled = False  # Whether to perform click on movement
 
-    def start(self, interval_seconds: int) -> None:
+    def start(self, interval_seconds: int, click_enabled: bool = False) -> None:
         """
         Start periodic mouse movements.
 
         Args:
             interval_seconds: Time between movements in seconds
+            click_enabled: Whether to perform mouse click on movement
 
         Raises:
             EngineError: If already running or unable to start
@@ -71,6 +73,7 @@ class MovementEngine(QObject):
         self._timer.timeout.connect(self._execute_movement)
         self._current_interval = interval_seconds
         self._pattern_state = 0  # Reset pattern
+        self._click_enabled = click_enabled
 
         # Start timer (interval in milliseconds)
         self._timer.start(interval_seconds * 1000)
@@ -163,6 +166,14 @@ class MovementEngine(QObject):
         movement = self._mouse_controller.move(delta_x, delta_y)
 
         if movement.success:
+            # Perform click if enabled
+            if self._click_enabled:
+                try:
+                    self._mouse_controller.click()
+                except Exception as e:
+                    # Log but don't fail the movement if click fails
+                    print(f"Click failed: {e}")
+
             # Record success
             self._state_manager.record_movement_success(movement)
 
@@ -196,3 +207,21 @@ class MovementEngine(QObject):
             Interval in seconds
         """
         return self._current_interval
+
+    def set_click_enabled(self, enabled: bool) -> None:
+        """
+        Update click enabled setting while running.
+
+        Args:
+            enabled: Whether to perform click on movement
+        """
+        self._click_enabled = enabled
+
+    def is_click_enabled(self) -> bool:
+        """
+        Check if click is enabled.
+
+        Returns:
+            True if click is enabled, False otherwise
+        """
+        return self._click_enabled

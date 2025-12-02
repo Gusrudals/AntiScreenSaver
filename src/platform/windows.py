@@ -7,7 +7,7 @@ It implements the IMouseController interface for dependency injection.
 
 from datetime import datetime
 from typing import Optional
-from pynput.mouse import Controller as PynputController
+from pynput.mouse import Controller as PynputController, Button
 from ..core.contracts import IMouseController
 from ..core.models import MouseMovement
 
@@ -94,6 +94,19 @@ class WindowsMouseController(IMouseController):
             self._last_error = f"Failed to get mouse position: {str(e)}"
             # Return a safe default
             return (0, 0)
+
+    def click(self) -> None:
+        """
+        Perform left mouse button click.
+
+        Raises:
+            Exception: If click operation fails
+        """
+        try:
+            self._controller.click(Button.left, 1)
+        except Exception as e:
+            self._last_error = f"Mouse click failed: {str(e)}"
+            raise
 
     def get_last_error(self) -> Optional[str]:
         """

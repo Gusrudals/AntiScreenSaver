@@ -83,6 +83,7 @@ class ApplicationController(QObject):
         self._main_window.start_requested.connect(self._on_start_requested)
         self._main_window.stop_requested.connect(self._on_stop_requested)
         self._main_window.interval_changed.connect(self._on_interval_changed)
+        self._main_window.click_enabled_changed.connect(self._on_click_enabled_changed)
         self._main_window.close_to_tray.connect(self._on_close_to_tray)
 
         # Tray icon signals
@@ -106,6 +107,7 @@ class ApplicationController(QObject):
 
             # Apply to UI
             self._main_window.set_interval(self._config.interval_seconds)
+            self._main_window.set_click_enabled(self._config.click_enabled)
             self._tray_icon.set_interval(self._config.interval_seconds)
 
         except ConfigurationError as e:
@@ -184,9 +186,10 @@ class ApplicationController(QObject):
             return
 
         interval = self._main_window.get_interval()
+        click_enabled = self._main_window.get_click_enabled()
 
         try:
-            self._engine.start(interval)
+            self._engine.start(interval, click_enabled)
             self._tray_icon.show_started_notification()
         except EngineError as e:
             self._main_window.show_error("Start Error", str(e))
@@ -220,6 +223,17 @@ class ApplicationController(QObject):
                 self._engine.update_interval(interval)
             except EngineError as e:
                 self._main_window.show_error("Interval Update Error", str(e))
+
+    @Slot(bool)
+    def _on_click_enabled_changed(self, enabled: bool):
+        """Handle click enabled change from GUI."""
+        if self._config:
+            self._config.click_enabled = enabled
+            self._save_configuration()
+
+        # Update running engine if active
+        if self._engine.is_running():
+            self._engine.set_click_enabled(enabled)
 
     @Slot()
     def _on_close_to_tray(self):
