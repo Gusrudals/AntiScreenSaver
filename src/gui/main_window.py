@@ -51,8 +51,8 @@ class MainWindow(QMainWindow):
     def _setup_ui(self):
         """Set up the window UI."""
         self.setWindowTitle("Anti-Screensaver Mouse Mover")
-        self.setMinimumSize(350, 300)
-        self.setMaximumSize(500, 400)
+        self.setMinimumSize(400, 380)
+        self.setMaximumSize(550, 500)
 
         # Central widget
         central = QWidget()
@@ -106,6 +106,7 @@ class MainWindow(QMainWindow):
         # Settings section
         settings_group = QGroupBox("Settings")
         settings_layout = QVBoxLayout(settings_group)
+        settings_layout.setSpacing(10)
 
         # Interval slider
         self._interval_slider = IntervalSlider()
@@ -117,6 +118,9 @@ class MainWindow(QMainWindow):
         self._warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._warning_label.hide()
         settings_layout.addWidget(self._warning_label)
+
+        # Add some spacing before checkboxes
+        settings_layout.addSpacing(5)
 
         # Auto-start checkbox (future feature placeholder)
         self._auto_start_checkbox = QCheckBox("Start with system (Windows only)")
@@ -134,8 +138,10 @@ class MainWindow(QMainWindow):
         # Diagnostics section
         diag_group = QGroupBox("Diagnostics")
         diag_layout = QVBoxLayout(diag_group)
+        diag_layout.setSpacing(8)
 
         diag_grid = QHBoxLayout()
+        diag_grid.setSpacing(15)
 
         # Movement count
         count_layout = QVBoxLayout()
