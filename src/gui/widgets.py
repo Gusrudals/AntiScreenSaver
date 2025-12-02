@@ -4,7 +4,7 @@ Reusable GUI widgets for Anti-Screensaver Mouse Mover
 This module contains custom widgets used throughout the application.
 """
 
-from PySide6.QtWidgets import QWidget, QSlider, QLabel, QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import QWidget, QSlider, QLabel, QHBoxLayout, QVBoxLayout, QSpinBox
 from PySide6.QtCore import Qt, Signal
 
 
@@ -12,7 +12,7 @@ class IntervalSlider(QWidget):
     """
     Custom widget for configuring movement interval.
 
-    Combines a slider with a label showing the current value.
+    Combines a slider with a spinbox for direct input and a label showing the current value.
     Range: 10-300 seconds
     """
 
@@ -50,6 +50,9 @@ class IntervalSlider(QWidget):
 
         layout.addLayout(label_layout)
 
+        # Slider and spinbox row
+        control_layout = QHBoxLayout()
+
         # Slider
         self._slider = QSlider(Qt.Orientation.Horizontal)
         self._slider.setMinimum(10)
@@ -57,7 +60,19 @@ class IntervalSlider(QWidget):
         self._slider.setValue(30)
         self._slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self._slider.setTickInterval(30)
-        layout.addWidget(self._slider)
+        control_layout.addWidget(self._slider, stretch=1)
+
+        # Spinbox for direct input
+        self._spinbox = QSpinBox()
+        self._spinbox.setMinimum(10)
+        self._spinbox.setMaximum(300)
+        self._spinbox.setValue(30)
+        self._spinbox.setSuffix(" s")
+        self._spinbox.setMinimumWidth(70)
+        self._spinbox.setToolTip("Enter interval directly")
+        control_layout.addWidget(self._spinbox)
+
+        layout.addLayout(control_layout)
 
         # Range labels
         range_layout = QHBoxLayout()
@@ -68,10 +83,26 @@ class IntervalSlider(QWidget):
 
     def _connect_signals(self):
         """Connect internal signals."""
-        self._slider.valueChanged.connect(self._on_value_changed)
+        self._slider.valueChanged.connect(self._on_slider_changed)
+        self._spinbox.valueChanged.connect(self._on_spinbox_changed)
 
-    def _on_value_changed(self, value: int):
+    def _on_slider_changed(self, value: int):
         """Handle slider value change."""
+        # Block spinbox signals to avoid circular updates
+        self._spinbox.blockSignals(True)
+        self._spinbox.setValue(value)
+        self._spinbox.blockSignals(False)
+
+        self._update_value_label(value)
+        self.interval_changed.emit(value)
+
+    def _on_spinbox_changed(self, value: int):
+        """Handle spinbox value change."""
+        # Block slider signals to avoid circular updates
+        self._slider.blockSignals(True)
+        self._slider.setValue(value)
+        self._slider.blockSignals(False)
+
         self._update_value_label(value)
         self.interval_changed.emit(value)
 
@@ -105,17 +136,27 @@ class IntervalSlider(QWidget):
         """
         # Clamp to valid range
         value = max(10, min(300, value))
+
+        # Update both slider and spinbox
+        self._slider.blockSignals(True)
+        self._spinbox.blockSignals(True)
+
         self._slider.setValue(value)
+        self._spinbox.setValue(value)
         self._update_value_label(value)
+
+        self._slider.blockSignals(False)
+        self._spinbox.blockSignals(False)
 
     def set_enabled(self, enabled: bool):
         """
-        Enable or disable the slider.
+        Enable or disable the slider and spinbox.
 
         Args:
-            enabled: Whether the slider should be enabled
+            enabled: Whether the controls should be enabled
         """
         self._slider.setEnabled(enabled)
+        self._spinbox.setEnabled(enabled)
 
     def is_warning_value(self) -> bool:
         """

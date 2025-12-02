@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
     stop_requested = Signal()
     interval_changed = Signal(int)
     auto_start_changed = Signal(bool)
+    click_enabled_changed = Signal(bool)
     close_to_tray = Signal()
 
     def __init__(self, parent=None):
@@ -123,6 +124,11 @@ class MainWindow(QMainWindow):
         self._auto_start_checkbox.setToolTip("Auto-start feature coming soon")
         settings_layout.addWidget(self._auto_start_checkbox)
 
+        # Click enabled checkbox
+        self._click_enabled_checkbox = QCheckBox("Enable mouse click on movement")
+        self._click_enabled_checkbox.setToolTip("Perform left mouse click when moving the mouse")
+        settings_layout.addWidget(self._click_enabled_checkbox)
+
         layout.addWidget(settings_group)
 
         # Diagnostics section
@@ -166,6 +172,7 @@ class MainWindow(QMainWindow):
         self._toggle_button.clicked.connect(self._on_toggle_clicked)
         self._interval_slider.interval_changed.connect(self._on_interval_changed)
         self._auto_start_checkbox.stateChanged.connect(self._on_auto_start_changed)
+        self._click_enabled_checkbox.stateChanged.connect(self._on_click_enabled_changed)
 
     def _on_toggle_clicked(self):
         """Handle start/stop button click."""
@@ -191,6 +198,10 @@ class MainWindow(QMainWindow):
     def _on_auto_start_changed(self, state: int):
         """Handle auto-start checkbox change."""
         self.auto_start_changed.emit(state == Qt.CheckState.Checked.value)
+
+    def _on_click_enabled_changed(self, state: int):
+        """Handle click enabled checkbox change."""
+        self.click_enabled_changed.emit(state == Qt.CheckState.Checked.value)
 
     @Slot(bool)
     def set_running_state(self, is_running: bool):
@@ -301,6 +312,24 @@ class MainWindow(QMainWindow):
             enabled: Whether auto-start is enabled
         """
         self._auto_start_checkbox.setChecked(enabled)
+
+    def set_click_enabled(self, enabled: bool):
+        """
+        Set click enabled checkbox state.
+
+        Args:
+            enabled: Whether click is enabled
+        """
+        self._click_enabled_checkbox.setChecked(enabled)
+
+    def get_click_enabled(self) -> bool:
+        """
+        Get click enabled checkbox state.
+
+        Returns:
+            Whether click is enabled
+        """
+        return self._click_enabled_checkbox.isChecked()
 
     def show_error(self, title: str, message: str):
         """

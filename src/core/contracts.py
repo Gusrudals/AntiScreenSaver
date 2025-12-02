@@ -77,6 +77,7 @@ class IMouseController(ABC):
 
     Responsibilities:
     - Execute mouse movements
+    - Execute mouse clicks
     - Abstract platform-specific implementations
     - Report success/failure of movements
     """
@@ -92,6 +93,16 @@ class IMouseController(ABC):
 
         Returns:
             MouseMovement object with execution result
+        """
+        pass
+
+    @abstractmethod
+    def click(self) -> None:
+        """
+        Perform left mouse button click.
+
+        Raises:
+            Exception: If click operation fails
         """
         pass
 
